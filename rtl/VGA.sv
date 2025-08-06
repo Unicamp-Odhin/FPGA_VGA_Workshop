@@ -27,13 +27,34 @@ localparam BUFFER_SIZE = WIDTH * HEIGHT;
 
 `ifdef BLACK_AND_WHITE
 localparam BUFFER_WIDTH = 1;
-`elsif GRAY_SCALE
-localparam BUFFER_WIDTH = VGA_COLOR_DEPTH;
-`else
-localparam BUFFER_WIDTH = (VGA_COLOR_DEPTH * 3);
-`endif
 
 logic [BUFFER_WIDTH - 1:0] video_buffer [0: BUFFER_SIZE - 1];
+`elsif GRAY_SCALE
+localparam BUFFER_WIDTH = VGA_COLOR_DEPTH;
+
+logic [BUFFER_WIDTH - 1:0] video_buffer [0: BUFFER_SIZE - 1];
+`else
+localparam BUFFER_WIDTH = (VGA_COLOR_DEPTH * 3);
+
+typedef struct packed {
+    logic [VGA_COLOR_DEPTH - 1:0] r;
+    logic [VGA_COLOR_DEPTH - 1:0] g;
+    logic [VGA_COLOR_DEPTH - 1:0] b;
+} pixel_t;
+
+pixel_t [BUFFER_WIDTH - 1:0] video_buffer [0: BUFFER_SIZE - 1];
+`endif
+
+
+// VGA Timing Parameters for 640x480 @ 60Hz
+localparam H_VISIBLE_AREA   = 640;
+localparam H_FRONT_PORCH    = 16;
+localparam H_SYNC_PULSE     = 96;
+localparam H_BACK_PORCH     = 48;
+localparam H_TOTAL          = H_VISIBLE_AREA + H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH;
+
+logic [9:0] CounterX;
+logic [8:0] CounterY;
 
 
     
