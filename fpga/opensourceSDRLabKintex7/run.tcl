@@ -1,7 +1,26 @@
 read_verilog -sv main.sv
+read_verilog -sv ../../rtl/VGA.sv
+read_vhdl rgb2dvi/TMDS_Encoder.vhd
+read_vhdl rgb2dvi/ClockGen.vhd
+read_vhdl rgb2dvi/DVI_Constants.vhd
+read_vhdl rgb2dvi/OutputSERDES.vhd
+read_vhdl rgb2dvi/rgb2dvi.vhd
+read_vhdl rgb2dvi/SyncAsyncReset.vhd
+read_vhdl rgb2dvi/SyncAsync.vhd
 
-read_xdc "pinout.xdc"
+
+read_verilog ./ip/clk_wiz_0/clk_wiz_0_clk_wiz.v
+read_verilog ./ip/clk_wiz_0/clk_wiz_0.v
+read_xdc     ./ip/clk_wiz_0/clk_wiz_0.xdc
+
+read_xdc pinout.xdc
+read_xdc rgb2dvi/rgb2dvi_ooc.xdc
+read_xdc rgb2dvi/rgb2dvi.xdc
+
 set_property PROCESSING_ORDER EARLY [get_files pinout.xdc]
+set_property PROCESSING_ORDER EARLY [get_files rgb2dvi/rgb2dvi_ooc.xdc]
+set_property PROCESSING_ORDER EARLY [get_files rgb2dvi/rgb2dvi.xdc]
+set_property PROCESSING_ORDER EARLY [get_files ip/clk_wiz_0/clk_wiz_0.xdc]
 
 # synth
 synth_design -top "top" -part "xc7k325tffg676-2"

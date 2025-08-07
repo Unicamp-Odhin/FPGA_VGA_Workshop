@@ -18,7 +18,41 @@ module top (
     output logic [3:0] VGA_B
 );
 
+logic wr_en;
+logic [24:0] wr_data;
+logic [18:0] wr_addr;
 
+assign wr_en = 0;
+
+logic [1:0] clk_vga;
+
+initial begin
+    clk_vga = 0;
+end
+
+always_ff @( posedge clk ) begin
+    clk_vga <= clk_vga + 1;
+end
+
+VGA #(
+    .CLK_FREQ             (100_000_000),
+    .VGA_CLK_FREQ         (25_000_000),
+    .VGA_WIDTH            (640),
+    .VGA_HEIGHT           (480),
+    .VGA_COLOR_DEPTH      (4)
+) u_VGA (
+    .clk                  (clk_vga[1]),                    // 1 bit
+    .rst_n                (CPU_RESETN),                    // 1 bit
+    .wr_en_i              (wr_en),                         // 1 bit
+    .wr_data_i            (wr_data),                       // ? bits
+    .wr_addr_i            (wr_addr),                       // 19 bits
+    .vga_r                (VGA_R),                         // ? bits
+    .vga_g                (VGA_G),                         // ? bits
+    .vga_b                (VGA_B),                         // ? bits
+    .hsync                (VGA_HS),                        // 1 bit
+    .vsync                (VGA_VS),                        // 1 bit
+    .vga_visible          ()
+);
 
 endmodule
 

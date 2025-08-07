@@ -1,4 +1,5 @@
 read_verilog -sv main.sv
+read_verilog -sv ../../rtl/VGA.sv
 
 set_param general.maxThreads 16
 
