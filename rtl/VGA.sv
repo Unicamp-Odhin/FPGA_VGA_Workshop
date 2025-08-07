@@ -23,10 +23,10 @@ module VGA #(
 
     localparam BUFFER_SIZE = VGA_WIDTH * VGA_HEIGHT;
 
-    logic [VGA_COLOR_DEPTH - 1: 0] video_buffer [0: BUFFER_SIZE - 1];
+    //logic [VGA_COLOR_DEPTH - 1: 0] video_buffer [0: BUFFER_SIZE - 1];
 
     initial begin
-        $readmemh("initial_video.hex", video_buffer);
+        //$readmemh("initial_video.hex", video_buffer);
     end
 
     // VGA Timing Parameters for 640x480 @ 60Hz
@@ -47,13 +47,13 @@ module VGA #(
     logic visible_area;
 
     logic [18:0] pixel_index;
-
+/*
     always_ff @( posedge clk ) begin : BUFFER_INPUT_LOGIC
         if(wr_en_i) begin
             video_buffer[wr_addr_i] <= wr_data_i;
         end
     end
-
+*/
     always_ff @(posedge clk or negedge rst_n) begin : PIXEL_ADDR_LOGIC
         if (!rst_n) begin
             pixel_index <= 0;
@@ -84,9 +84,9 @@ module VGA #(
         end
     end
 
-    assign vga_r = visible_area ? video_buffer[pixel_index] : 0;
-    assign vga_g = visible_area ? video_buffer[pixel_index] : 0;
-    assign vga_b = visible_area ? video_buffer[pixel_index] : 0;
+    assign vga_r = visible_area ? 4'hff : 0;
+    assign vga_g = visible_area ? 4'hff : 0;
+    assign vga_b = visible_area ? 4'hff : 0;
     assign hsync = ~(h_count >= (H_VISIBLE + H_FRONT_PORCH) &&
                      h_count < (H_VISIBLE + H_FRONT_PORCH + H_SYNC_PULSE));
     assign vsync = ~(v_count >= (V_VISIBLE + V_FRONT_PORCH) &&
