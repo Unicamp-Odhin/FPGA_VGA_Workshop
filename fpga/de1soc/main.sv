@@ -12,7 +12,7 @@ module top (
     output logic [7:0] VGA_B,
     output logic [7:0] VGA_G,
     output logic [7:0] VGA_R,
-    //output logic VGA_CLK,
+    output logic VGA_CLK,
     output logic VGA_SYNC_N,
     output logic VGA_BLANK_N,
     output logic VGA_HS,
@@ -28,7 +28,7 @@ initial begin
 end
 
 always @(posedge CLOCK_50) begin
-    reset_bousing <= ~KEY[0];
+    reset_bousing <= KEY[0];
     clk <= ~clk;
 end
 
@@ -38,26 +38,29 @@ logic [18:0] wr_addr;
 
 assign wr_en = 0;
 
+logic r, g, b;
+
+assign VGA_B = {b, 4'h0};
+assign VGA_R = {r, 4'h0};
+assign VGA_G = {g, 4'h0};
+
 VGA #(
-    .CLK_FREQ             (100_000_000),
-    .VGA_CLK_FREQ         (25_000_000),
     .VGA_WIDTH            (640),
     .VGA_HEIGHT           (480),
-    .VGA_COLOR_DEPTH      (8)
+    .VGA_COLOR_DEPTH      (4)
 ) u_VGA (
     .clk                  (clk),                           // 1 bit
-    .rst_n                (~reset_bousing),                // 1 bit
-    .wr_en_i              (wr_en),                         // 1 bit
-    .wr_data_i            (wr_data),                       // ? bits
-    .wr_addr_i            (wr_addr),                       // 19 bits
-    .vga_r                (VGA_R),                         // ? bits
-    .vga_g                (VGA_G),                         // ? bits
-    .vga_b                (VGA_B),                         // ? bits
+    .rst_n                (reset_bousing),                // 1 bit
+
+    .vga_r                (r),                         // ? bits
+    .vga_g                (g),                         // ? bits
+    .vga_b                (b),                         // ? bits
     .hsync                (VGA_HS),                        // 1 bit
     .vsync                (VGA_VS),                        // 1 bit
     .vga_visible          (VGA_BLANK_N)
 );
 
-assign VGA_SYNC_N  = ~(VGA_HS & VGA_VS);
-    
+assign VGA_SYNC_N = ~(VGA_HS & VGA_VS);
+assign VGA_CLK    = clk;
+
 endmodule

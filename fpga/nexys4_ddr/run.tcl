@@ -1,10 +1,16 @@
 read_verilog -sv main.sv
 read_verilog -sv ../../rtl/VGA.sv
+read_verilog -sv ../../rtl/pixel_gen.sv
+
+read_verilog ./ip/clk_wiz_0/clk_wiz_0_clk_wiz.v
+read_verilog ./ip/clk_wiz_0/clk_wiz_0.v
+read_xdc     ./ip/clk_wiz_0/clk_wiz_0.xdc
 
 set_param general.maxThreads 16
 
 read_xdc "pinout.xdc"
 set_property PROCESSING_ORDER EARLY [get_files pinout.xdc]
+set_property PROCESSING_ORDER EARLY [get_files ip/clk_wiz_0/clk_wiz_0.xdc]
 
 # synth
 synth_design -top "top" -part "xc7a100tcsg324-1"

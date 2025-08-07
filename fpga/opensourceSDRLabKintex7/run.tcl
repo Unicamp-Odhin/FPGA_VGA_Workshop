@@ -1,5 +1,6 @@
 read_verilog -sv main.sv
 read_verilog -sv ../../rtl/VGA.sv
+read_verilog -sv ../../rtl/pixel_gen.sv
 read_vhdl rgb2dvi/TMDS_Encoder.vhd
 read_vhdl rgb2dvi/ClockGen.vhd
 read_vhdl rgb2dvi/DVI_Constants.vhd

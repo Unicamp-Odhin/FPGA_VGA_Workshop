@@ -46,17 +46,13 @@ logic [18:0] wr_addr;
 assign wr_en = 0;
 
 VGA #(
-    .CLK_FREQ             (100_000_000),
-    .VGA_CLK_FREQ         (25_000_000),
     .VGA_WIDTH            (640),
     .VGA_HEIGHT           (480),
     .VGA_COLOR_DEPTH      (4)
 ) u_VGA (
     .clk                  (pixel_clk),                     // 1 bit
     .rst_n                (rst_n),                         // 1 bit
-    .wr_en_i              (wr_en),                         // 1 bit
-    .wr_data_i            (wr_data),                       // ? bits
-    .wr_addr_i            (wr_addr),                       // 19 bits
+
     .vga_r                (red),                           // ? bits
     .vga_g                (green),                         // ? bits
     .vga_b                (blue),                          // ? bits
