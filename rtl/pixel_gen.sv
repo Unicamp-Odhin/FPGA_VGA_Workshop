@@ -5,6 +5,8 @@ module pixel_gen #(
     parameter BUFFER_WIDTH    = VGA_COLOR_DEPTH * 3 // RGB888
 ) (
     input  logic visible_area,
+    input  logic [9:0] pixel_x,
+    input  logic [8:0] pixel_y,
     input  logic [18:0] id,
     output logic [VGA_COLOR_DEPTH - 1:0] r,
     output logic [VGA_COLOR_DEPTH - 1:0] g,
@@ -13,10 +15,10 @@ module pixel_gen #(
 
     localparam BUFFER_SIZE = VGA_WIDTH * VGA_HEIGHT;
 
-    logic [VGA_COLOR_DEPTH - 1: 0] video_buffer [0: BUFFER_SIZE - 1];
+    logic video_buffer [0: BUFFER_SIZE - 1];
 
     initial begin
-        $readmemh("initial_video.hex", video_buffer);
+        $readmemb("saida_binaria.hex", video_buffer);
     end
 
     // WIDTH = 64
@@ -34,9 +36,9 @@ module pixel_gen #(
     //assign g = visible_area ? ~val     : 0;
     //assign b = visible_area ? val >> 1 : 0;
 
-    assign r = video_buffer[id];
-    assign g = video_buffer[id];
-    assign b = video_buffer[id];
+    assign r = video_buffer[id] ? 8'hFFFF : 0;
+    assign g = video_buffer[id] ? 8'hFFFF : 0;
+    assign b = video_buffer[id] ? 8'hFFFF : 0;
 
     //assign r = visible_area ? 0       : 0;
     //assign g = visible_area ? 0       : 0;

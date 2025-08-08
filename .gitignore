@@ -302,3 +302,6 @@ vivado_*.backup.*
 ip_project
 ip/
 file.jpeg
+saida.hex
+saida_binaria.gex
+initial_video.hex

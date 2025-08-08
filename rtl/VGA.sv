@@ -1,8 +1,7 @@
 module VGA #(
     parameter VGA_WIDTH       = 640,
     parameter VGA_HEIGHT      = 480,
-    parameter VGA_COLOR_DEPTH = 4,
-    parameter BUFFER_WIDTH    = VGA_COLOR_DEPTH * 3 // RGB888
+    parameter VGA_COLOR_DEPTH = 4
 ) (
     input  logic clk,
     input  logic rst_n,
@@ -29,17 +28,32 @@ module VGA #(
 
     logic [9:0] h_count;
     logic [9:0] v_count;
+
     logic visible_area;
 
     logic [18:0] pixel_index;
+    logic [9:0]  pixel_x; // 0..639
+    logic [8:0]  pixel_y; // 0..479
+
     always_ff @(posedge clk or negedge rst_n) begin : PIXEL_ADDR_LOGIC
         if (!rst_n) begin
             pixel_index <= 0;
+            pixel_x     <= 0;
+            pixel_y     <= 0;
         end else begin
             if (v_count == 0 && h_count == 0) begin
                 pixel_index <= 0;
+                pixel_x     <= 0;
+                pixel_y     <= 0;
             end else if (visible_area) begin
                 pixel_index <= pixel_index + 1;
+
+                if (pixel_x == VGA_WIDTH - 1) begin
+                    pixel_x <= 0;
+                    pixel_y <= pixel_y + 1;
+                end else begin
+                    pixel_x <= pixel_x + 1;
+                end
             end
         end
     end
@@ -76,6 +90,8 @@ module VGA #(
         .VGA_COLOR_DEPTH (VGA_COLOR_DEPTH)
     ) u1 (
         .visible_area (visible_area),
+        .pixel_x      (pixel_x),
+        .pixel_y      (pixel_y),
         .id           (pixel_index),
         .r            (vga_r),
         .g            (vga_g),
