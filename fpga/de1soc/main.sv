@@ -21,22 +21,37 @@ module top (
 
 logic reset_bousing;
 logic clk;
+logic btn_rst, auto_rst;
+logic [1:0] stt;
 
 initial begin
     reset_bousing = 1'b0;
-    clk = 0;
+    clk           = 0;
+    stt           = 0;
 end
 
-always @(posedge CLOCK_50) begin
-    reset_bousing <= KEY[0];
-    clk <= ~clk;
+always_ff @( posedge CLOCK_50 ) begin
+    case (stt)
+        0: begin
+            auto_rst <= 0;
+            stt      <= 1;
+        end
+        1: begin
+            auto_rst <= 0;
+            stt      <= 2;
+        end 
+        2: begin
+            auto_rst <= 1;
+        end
+    endcase
 end
 
-logic wr_en;
-logic [24:0] wr_data;
-logic [18:0] wr_addr;
+pll pll1 (
+    .refclk   (CLOCK_50),  // refclk.clk
+    .rst      (~auto_rst), // reset.reset
+    .outclk_0 (clk)    // outclk0.clk
+);
 
-assign wr_en = 0;
 
 logic r, g, b;
 
